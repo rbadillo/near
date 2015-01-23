@@ -1,47 +1,45 @@
 package com.near.appusers.api;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import org.skife.jdbi.v2.StatementContext;
-import org.skife.jdbi.v2.tweak.ResultSetMapper;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 /**
- * Represents a AppUser data object. A AppUser is an example of an object for other Near 
- * abstractions.
+ * Represents a AppUser data object. AppUsers refers to the users of Near Mobile Application.
+ * Data in this representation is the same as the one provided by Facebook, which is:
+ * <ul>
+ * <li>id
+ * <li>name
+ * <li>first_name
+ * <li>last_name
+ * <li>link
+ * <li>gender
+ * <li>locale
+ * <li>timezone
+ * <li>updated_time
+ * <li>verified
+ * <li>user_friends
+ * <li>email
+ * </ul> 
+ * 
+ * <p>
+ * As this data is stored also by FB, we will only keep id, and name.
+ * More information about this fields and their types can be found here:
+ * https://developers.facebook.com/docs/graph-api/reference/v2.2/user
  * 
  * @author zwkero
  *
  */
-public class AppUser {
-  /**
-   * Allows mapping from an SQL query to a new AppUser instance.
-   * 
-   * @author zwkero
-   *
-   */
-  public class Mapper implements ResultSetMapper<AppUser> {
-    public AppUser map(int id, ResultSet resultSet, StatementContext ctx) throws SQLException {
-      return new AppUser(resultSet.getLong("id"), resultSet.getString("name"), resultSet.getInt("age"));
-    }
-  }
-  
-  /** Unique identifier of a AppUser */
-  private long id;
+public class AppUser {  
+  /** Unique identifier of the AppUser */
+  private String id;
   /** The name of the AppUser. It could be repeated among other AppUsers */
   private String name;
-  /** The age of the AppUser */
-  private int age;
   
-  public AppUser(long id, String name, int age) {
+  public AppUser(String id, String name) {
     this.id = id;
     this.name = name;
-    this.age = age;
   }
   
   @JsonProperty
-  public long getId() {
+  public String getId() {
     return id;
   }
   
@@ -49,14 +47,9 @@ public class AppUser {
   public String getName() {
     return name;
   }
-
-  @JsonProperty
-  public int getAge() {
-    return age;
-  }
   
   @JsonProperty
-  public void setId(long id) {
+  public void setId(String id) {
     this.id = id;
   }
   
@@ -65,13 +58,7 @@ public class AppUser {
     this.name = name;
   }
 
-  @JsonProperty
-  public void setAge(int age) {
-    this.age = age;
-  }
-
   public boolean equals(AppUser compareTo) {
-    return getId() == compareTo.getId() && getName().equals(compareTo.getName()) 
-        && getAge() == compareTo.getAge();
+    return getId() == compareTo.getId() && getName().equals(compareTo.getName());
   }
 }
