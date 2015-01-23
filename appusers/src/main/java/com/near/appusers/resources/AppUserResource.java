@@ -82,5 +82,4 @@ public class AppUserResource {
     AppUser.setName("");
     AppUser.setAge(0);
   }
-  
 }
