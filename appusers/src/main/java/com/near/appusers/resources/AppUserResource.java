@@ -22,11 +22,11 @@ import com.google.common.base.Optional;
 public class AppUserResource {
   static final Logger logger = LoggerFactory.getLogger(AppUserResource.class.getName());
   
-  // TODO(zwkero): remove this and change for a AppUsersDAO object.
-  public final ArrayList<AppUser> AppUsers;
+  // TODO(zwkero): remove this and change for a real AppUsersDAO object that uses JDBI.
+  public final ArrayList<AppUser> appUsersDAO;
   
-  public AppUserResource(ArrayList<AppUser> AppUsers) {
-    this.AppUsers = AppUsers;
+  public AppUserResource(ArrayList<AppUser> appUsersDAO) {
+    this.appUsersDAO = appUsersDAO;
   }
   
   /** Get the information from a single AppUser given the ID */
@@ -35,7 +35,7 @@ public class AppUserResource {
   @Path("/{id}")
   public AppUser readAppUser(@PathParam("id") int id) {
     logger.info("Reading AppUser");
-    AppUser AppUser = AppUsers.get(id);
+    AppUser AppUser = appUsersDAO.get(id);
     return AppUser;
   }
   
@@ -44,22 +44,19 @@ public class AppUserResource {
   @Timed
   public ArrayList<AppUser> allAppUsers() {
     logger.info("Getting all AppUsers");
-    return AppUsers;
+    return appUsersDAO;
   }
   
   /** Url to request to create a AppUser */
   @POST
   @Timed
-  public AppUser createAppUser(@QueryParam("name") Optional<String> name, 
-      @QueryParam("age") Optional<Integer> age) {
+  public AppUser createAppUser(@QueryParam("name") Optional<String> name) {
     logger.info("Creating a AppUser with parameters:\n"
-        + " - name: " + name + "\n"
-        + " - age: " + age);
-    long nextId = AppUsers.size();
-    String AppUserName = name.or("");
-    int AppUserAge = age.or(0);
-    AppUser AppUser = new AppUser(nextId, AppUserName, AppUserAge);
-    AppUsers.add(AppUser);
+        + " - name: " + name);
+    String nextId = Integer.toString(appUsersDAO.size());
+    String appUserName = name.or("");
+    AppUser AppUser = new AppUser(nextId, appUserName);
+    appUsersDAO.add(AppUser);
     return AppUser;
   }
   
@@ -69,17 +66,15 @@ public class AppUserResource {
   @Path("/{id}")
   public void updateAppUser(@PathParam("id") int id, @QueryParam("name") String name,
       @QueryParam("age") int age) {
-    AppUser AppUser = AppUsers.get(id);
+    AppUser AppUser = appUsersDAO.get(id);
     AppUser.setName(name);
-    AppUser.setAge(age);
   }
   
   @DELETE
   @Timed
   @Path("/{id}")
   public void deleteAppUser(@PathParam("id") int id) {
-    AppUser AppUser = AppUsers.get(id);
+    AppUser AppUser = appUsersDAO.get(id);
     AppUser.setName("");
-    AppUser.setAge(0);
   }
 }
