@@ -59,6 +59,6 @@ public class AppUser {
   }
 
   public boolean equals(AppUser compareTo) {
-    return getId() == compareTo.getId() && getName().equals(compareTo.getName());
+    return getId().equals(compareTo.getId()) && getName().equals(compareTo.getName());
   }
 }
